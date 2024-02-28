@@ -8,7 +8,7 @@ namespace Blackjack
         private List<String> dealerHand;
         private List<String> userHand;
         private List<String> cards;
-        
+
 
 
         public List<String> CreateCards()
@@ -23,34 +23,45 @@ namespace Blackjack
                     {
                         cards.Add(rank.ToString());
                     }
-                }       
+                }
             }
 
             return cards;
         }
-
-        public List<String> DrawCards(int players)
+        public string Draw(Hand hand)
         {
-            List<String> initialCards = new List<String>(); 
+            var rand = new Random();
+            var randomCardIndex = rand.Next(cards.Count);
+            var card = cards[randomCardIndex];
+            
+            if (hand == Hand.Player)
+            {
+                userHand.Add(card);
+            }
+            else if (hand == Hand.Dealer) {
+                dealerHand.Add(card);
+            }
+            cards.RemoveAt(randomCardIndex);
+            return card;
+        }
+
+        
+        //draft 4 cards (2 for dealer and 2 for player) formatted for multiple players. and split based on how it should be on order.
+        public void InitialDeal(int players)
+        {
+            List<String> initialCards = new List<String>();
             var rand = new Random();
             int requiredCards = 2 + (2 * players);
             for (int i = 0; i < requiredCards; i++)
             {
-                var randomCardIndex = rand.Next(cards.Count) + 1;
+                var randomCardIndex = rand.Next(cards.Count);
                 var randomCard = cards[randomCardIndex];
                 initialCards.Add(randomCard);
                 cards.RemoveAt(randomCardIndex);
-                
+
             }
-            return initialCards;
-        }
-        
-        //draft 4 cards (2 for dealer and 2 for player) formatted for multiple players. and split based on how it should be on order.
-        public void Deal(List<String> initialCards)
-        {
             //this part will have to be looked at more when more possible players are allowed.
             //it is in preparation for this, but have not looked into it deep enough. 
-            int players = ((initialCards.Count - 2)/ 2) ;
             userHand = new List<String>();
             dealerHand = new List<String>();
 
@@ -60,15 +71,24 @@ namespace Blackjack
                 dealerHand.Add(initialCards[i+1]);
             }
         }
-
         public void ReplenishCards()
         {
-
+            foreach (string card in userHand)
+            {
+                cards.Add(card);
+            }
+            foreach (string card in dealerHand)
+            {
+                cards.Add(card);
+            }
+            userHand.Clear();
+            dealerHand.Clear();
         }
 
         
     }
 
     enum Rank { Ace1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack = 10, Queen = 10, King = 10, Ace2 = 11, Ace = Ace1 | Ace2 }
+    enum Hand { Player, Dealer}
 
 }
