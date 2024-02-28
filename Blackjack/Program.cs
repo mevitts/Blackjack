@@ -8,6 +8,7 @@
         private List<String> dealerHand;
         private List<String> userHand;
         private List<String> cards;
+        
 
 
         public List<String> CreateCards()
@@ -26,6 +27,13 @@
             }
 
             return cards;
+        }
+        
+        public 
+
+        public void ReplenishCards()
+        {
+
         }
 
 
