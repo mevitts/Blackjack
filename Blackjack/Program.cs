@@ -1,8 +1,8 @@
-﻿namespace Blackjack
+﻿
+namespace Blackjack
 {
     class Program
     {
-        private int balance;
         private const int TOTAL_CARDS = 312;
         private const int MAX_HAND = 21;
         private List<String> dealerHand;
@@ -28,15 +28,45 @@
 
             return cards;
         }
+
+        public List<String> DrawCards(int players)
+        {
+            List<String> initialCards = new List<String>(); 
+            var rand = new Random();
+            int requiredCards = 2 + (2 * players);
+            for (int i = 0; i < requiredCards; i++)
+            {
+                var randomCardIndex = rand.Next(cards.Count) + 1;
+                var randomCard = cards[randomCardIndex];
+                initialCards.Add(randomCard);
+                cards.RemoveAt(randomCardIndex);
+                
+            }
+            return initialCards;
+        }
         
-        public 
+        //draft 4 cards (2 for dealer and 2 for player) formatted for multiple players. and split based on how it should be on order.
+        public void Deal(List<String> initialCards)
+        {
+            //this part will have to be looked at more when more possible players are allowed.
+            //it is in preparation for this, but have not looked into it deep enough. 
+            int players = ((initialCards.Count - 2)/ 2) ;
+            userHand = new List<String>();
+            dealerHand = new List<String>();
+
+            for (int i = 0; i < players; i++)
+            {
+                userHand.Add(initialCards[i]);
+                dealerHand.Add(initialCards[i+1]);
+            }
+        }
 
         public void ReplenishCards()
         {
 
         }
 
-
+        
     }
 
     enum Rank { Ace1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack = 10, Queen = 10, King = 10, Ace2 = 11, Ace = Ace1 | Ace2 }

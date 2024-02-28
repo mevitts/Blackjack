@@ -8,15 +8,15 @@ namespace Blackjack
 {
     internal class Transaction
     {
-        public decimal Amount { get; }
+        public int Amount { get; }
         public DateTime Date { get; }
         public string Notes { get; }
 
-        public Transaction(decimal amount, DateTime date, string note)
+        public Transaction(int amount, DateTime date, string result)
         {
             Amount = amount;
             Date = date;
-            Notes = note;
+            Notes = result;
         }
     }
 }
