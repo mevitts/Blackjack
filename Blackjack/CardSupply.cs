@@ -1,13 +1,15 @@
 ﻿
+using System.Threading.Tasks.Sources;
+
 namespace Blackjack
 {
-    class Program
+    class CardSupply
     {
         private const int TOTAL_CARDS = 312;
         private const int MAX_HAND = 21;
-        private List<String> dealerHand;
-        private List<String> userHand;
-        private List<String> cards;
+        private static List<String> dealerHand;
+        private static List<String> userHand;
+        private static List<String> cards;
 
 
 
@@ -47,7 +49,7 @@ namespace Blackjack
 
         
         //draft 4 cards (2 for dealer and 2 for player) formatted for multiple players. and split based on how it should be on order.
-        public void InitialDeal(int players)
+        public static void InitialDeal(int players)
         {
             List<String> initialCards = new List<String>();
             var rand = new Random();
@@ -70,6 +72,7 @@ namespace Blackjack
                 userHand.Add(initialCards[i]);
                 dealerHand.Add(initialCards[i+1]);
             }
+            
         }
         public void ReplenishCards()
         {
@@ -83,6 +86,22 @@ namespace Blackjack
             }
             userHand.Clear();
             dealerHand.Clear();
+        }
+
+        public int CardTotal(List<String> player)
+        {
+            int cardScore = 0;
+            //will also need to make logic for dealer? or use this for dealer and if it gets to 16 then stop.
+            for (string card in  player)
+            {
+                //separate logics for if ace is in hand or not
+                if (!player.Contains("Ace"))
+                {
+
+                }
+            }
+
+            return cardScore;
         }
 
         

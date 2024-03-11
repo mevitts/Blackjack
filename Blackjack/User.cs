@@ -13,7 +13,7 @@ namespace Blackjack;
         {
             get
             {
-                int balance = 0;
+                int balance = 1000;
                 foreach (var item in _allTransactions)
                 {
                     balance += item.Amount;
@@ -25,7 +25,7 @@ namespace Blackjack;
     public List<String> userHand;
 
 
-    public User(string name, int initialBalance)
+    public User(string name)
         {
             Name = name;
         }
