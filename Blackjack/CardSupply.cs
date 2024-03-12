@@ -1,4 +1,5 @@
 ﻿
+using System.ComponentModel.Design;
 using System.Threading.Tasks.Sources;
 
 namespace Blackjack
@@ -88,21 +89,58 @@ namespace Blackjack
             dealerHand.Clear();
         }
 
-        public int CardTotal(List<String> player)
+        public int CardTotal(List<String> playerHand)
         {
             int cardScore = 0;
+            //second for ace second value consideration 
+            int cardScore2 = 0;
+            int cardScore3 = 0;
+            int finalScore = 0;
             //will also need to make logic for dealer? or use this for dealer and if it gets to 16 then stop.
-            for (string card in  player)
+            //separate logics for if ace is in hand or not
+            
+            foreach (string card in  playerHand)
             {
-                //separate logics for if ace is in hand or not
-                if (!player.Contains("Ace"))
+                if (Enum.TryParse(card, out Rank rank))
                 {
+                    if (rank != Rank.Ace)
+                    {
+                        cardScore += (int)rank;
+                        finalScore = cardScore;
+                    }
+                    else
+                    {
+                        cardScore += 1;
+                        cardScore2 += 11;
+                        //if two aces to have third option
+                        if (cardScore == 2)
+                        {
+                            cardScore3 = 12;
+                        }
+                        if (cardScore3 == 12)
+                        {
+                            Console.WriteLine($"Score is {cardScore} or {cardScore2} or {cardScore3}. Choose 1 or 2 or 3.");
+                        }
+                        Console.WriteLine($"Score is {cardScore} or {cardScore2} choose 1 or 2.");
+                        string response = Console.ReadLine();
+                        while (response != "1" && response != "2" && response != "3")
+                        {
+                            Console.WriteLine("Type 1, 2, or 3");
+                            response = Console.ReadLine();
+                        }
 
-                }
-            }
+                        return response switch
+                        {
+                            "1" => cardScore,
+                            "2" => cardScore2,
+                            "3" => cardScore3,
+                            _ => 0, // Default value, you may want to handle this differently
 
-            return cardScore;
-        }
+                        };
+                        
+                    }
+                } 
+        }return finalScore;
 
         
     }
