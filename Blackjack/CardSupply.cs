@@ -13,14 +13,20 @@ namespace Blackjack
         private static List<String> cards;
 
 
+        //will preserve encapsulation while also being available in other classes
+        public List<String> DealerHand => dealerHand;
+        public List<String> UserHand => userHand;
+
 
         public List<String> CreateCards()
         {
 
             cards = new List<String>();
             //24 loops because 6 decks of 4 suits
-            for (int i = 0; i < 24; i++) {
-                foreach (Rank rank in Enum.GetValues(typeof(Rank))) {
+            for (int i = 0; i < 24; i++)
+            {
+                foreach (Rank rank in Enum.GetValues(typeof(Rank)))
+                {
                     //excluding Ace1 and 2 because i have a combination which is Ace
                     if (rank != Rank.Ace1 && rank != Rank.Ace2)
                     {
@@ -36,25 +42,27 @@ namespace Blackjack
             var rand = new Random();
             var randomCardIndex = rand.Next(cards.Count);
             var card = cards[randomCardIndex];
-            
+
             if (hand == Hand.Player)
             {
                 userHand.Add(card);
             }
-            else if (hand == Hand.Dealer) {
+            else if (hand == Hand.Dealer)
+            {
                 dealerHand.Add(card);
             }
             cards.RemoveAt(randomCardIndex);
             return card;
         }
 
-        
+
         //draft 4 cards (2 for dealer and 2 for player) formatted for multiple players. and split based on how it should be on order.
         public static void InitialDeal(int players)
         {
             List<String> initialCards = new List<String>();
             var rand = new Random();
             int requiredCards = 2 + (2 * players);
+
             for (int i = 0; i < requiredCards; i++)
             {
                 var randomCardIndex = rand.Next(cards.Count);
@@ -71,9 +79,9 @@ namespace Blackjack
             for (int i = 0; i < players; i++)
             {
                 userHand.Add(initialCards[i]);
-                dealerHand.Add(initialCards[i+1]);
+                dealerHand.Add(initialCards[i + 1]);
             }
-            
+
         }
         public void ReplenishCards()
         {
@@ -98,8 +106,8 @@ namespace Blackjack
             int finalScore = 0;
             //will also need to make logic for dealer? or use this for dealer and if it gets to 16 then stop.
             //separate logics for if ace is in hand or not
-            
-            foreach (string card in  playerHand)
+
+            foreach (string card in playerHand)
             {
                 if (Enum.TryParse(card, out Rank rank))
                 {
@@ -137,15 +145,17 @@ namespace Blackjack
                             _ => 0, // Default value, you may want to handle this differently
 
                         };
-                        
+
                     }
-                } 
-        }return finalScore;
+                }
+            }
+            return finalScore;
+
+
+        }
 
         
     }
-
-    enum Rank { Ace1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack = 10, Queen = 10, King = 10, Ace2 = 11, Ace = Ace1 | Ace2 }
-    enum Hand { Player, Dealer}
-
+        enum Rank { Ace1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack = 10, Queen = 10, King = 10, Ace2 = 11, Ace = Ace1 | Ace2 }
+        enum Hand { Player, Dealer }
 }

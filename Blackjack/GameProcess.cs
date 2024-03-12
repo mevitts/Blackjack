@@ -55,8 +55,35 @@ namespace Blackjack
                     }
                 }
 
+                CardSupply cardSupply = new CardSupply();
+                cardSupply.CreateCards();
                 CardSupply.InitialDeal(1);
+                int userTotal = 0;
+                int dealerTotal = 0;
+                bool continueGame = true;
+                while (continueGame)
+                {
+                    userTotal = cardSupply.CardTotal(cardSupply.UserHand);
+                    dealerTotal = cardSupply.CardTotal(cardSupply.DealerHand);
+                    Console.WriteLine($"Your total is {userTotal}. Your dealer is showing {cardSupply.DealerHand[0]}. Will you hit or stay? (h/s)");
+                    string userResponse = Console.ReadLine();
+                    while (userResponse.ToLower() != "h" && userResponse.ToLower() != "s")
+                    {
+                        Console.WriteLine("Type h or s");
+                        userResponse = Console.ReadLine();
+                    }
+                    if (userResponse.ToLower() == "s")
+                    {
+                        //result will be method bool of win or lose with all win or lose logic. 
+                        Console.WriteLine($"Dealer reveals a {cardSupply.DealerHand[1]} to total {dealerTotal}. You {}
+                    }
+                    else
+                    {
+                        cardSupply.Draw(Hand.Player);
+                    }
 
+                }
+                
 
             }
 
