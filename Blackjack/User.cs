@@ -23,8 +23,6 @@ namespace Blackjack;
         }
 
     public List<String> userHand;
-
-
     public User(string name)
         {
             Name = name;

@@ -11,6 +11,19 @@ namespace Blackjack
     internal class GameProcess
     {
         User user = new User("Matt");
+        internal void GameMenu()
+        {
+            Console.WriteLine("Welcome to Blackjack. Type if you would like to play or check stats (p/c)");
+            var response = Console.ReadLine();
+            if (response.ToLower() == "p")
+            {
+                StartGame();
+            }
+            else
+            {
+                //stat looks
+            }
+        }
         internal void StartGame() {
             Console.WriteLine($@"{user.Balance} Credits.
                                  How much would you like to wager? (Increments of 1, 5, 10, 20, 50, 100)
@@ -19,7 +32,7 @@ namespace Blackjack
             string firstEntry = Console.ReadLine();
             if (firstEntry.ToLower() == "e")
             {
-                
+
             }
             //need to add other cases, like if increment is -1,, or if the answer/response was not an integer.
             {
@@ -31,7 +44,7 @@ namespace Blackjack
                     //so if it is less than wager after Increment() is run, then it was non valid, and then current is increased back by 1 again.
                     int wager = current;
                     current = helpers.Increment(current, amount);
-                    if (current < wager ) 
+                    if (current < wager)
                     {
                         Console.WriteLine("Invalid wager amount. Try again.");
                         current++;
@@ -42,7 +55,7 @@ namespace Blackjack
                     string seguir = Console.ReadLine();
                     if (seguir.ToLower() == "s")
                     {
-                     response = false;
+                        response = false;
                         break;
                     }
                     else if (seguir.ToLower() == "e")
@@ -55,16 +68,29 @@ namespace Blackjack
                     }
                 }
 
+
                 CardSupply cardSupply = new CardSupply();
+                Dealer dealer = new(cardSupply);
+
+
                 cardSupply.CreateCards();
                 CardSupply.InitialDeal(1);
+
                 int userTotal = 0;
                 int dealerTotal = 0;
                 bool continueGame = true;
+
+                List<string> dealerHand = cardSupply.DealerHand;
+
+                var bjResult = (dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand));
+                if (bjResult == Result.Tie || bjResult == Result.PlayBJ || bjResult == Result.DealBJ)
+                {
+                    continueGame = false;
+                }
                 while (continueGame)
                 {
                     userTotal = cardSupply.CardTotal(cardSupply.UserHand);
-                    dealerTotal = cardSupply.CardTotal(cardSupply.DealerHand);
+                    dealerTotal = dealer.DealerCount(ref dealerHand);
                     Console.WriteLine($"Your total is {userTotal}. Your dealer is showing {cardSupply.DealerHand[0]}. Will you hit or stay? (h/s)");
                     string userResponse = Console.ReadLine();
                     while (userResponse.ToLower() != "h" && userResponse.ToLower() != "s")
@@ -74,21 +100,58 @@ namespace Blackjack
                     }
                     if (userResponse.ToLower() == "s")
                     {
-                        //result will be method bool of win or lose with all win or lose logic. 
-                        Console.WriteLine($"Dealer reveals a {cardSupply.DealerHand[1]} to total {dealerTotal}. You {}
+                        dealer.DealerProcess(cardSupply.DealerHand);
+                        continueGame = false;
                     }
                     else
                     {
                         cardSupply.Draw(Hand.Player);
+                        if (dealer.Bust(cardSupply.UserHand, Hand.Player))
+                        {
+                            continueGame = false ;
+                        }
                     }
-
                 }
                 
 
-            }
+                var result = dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand);
+                
+                switch (result)
+                {
+                    case Result.PlayBJ:
+                        current = (int)(current * Math.Ceiling(1.5));
+                        Console.WriteLine($"You win by blackjack. You win {current}");
+                        break;
+                    case Result.DealBJ:
+                        Console.WriteLine($"The dealer wins by blackjack. You lose {current}");
+                        current = -current;
+                        break;
+                    case Result.Tie:
+                        Console.WriteLine("The hand is a draw");
+                        current = 0;
+                        break;
+                    case Result.DealBust:
+                        Console.WriteLine($"The dealer busts. You win {current}");
+                        break;
+                    case Result.PlayBust:
+                        Console.WriteLine($"You bust, you lose {current}.");
+                        current = -current; 
+                        break;
+                    case Result.DealTotal:
+                        Console.WriteLine($"The dealer wins this hand. You lose {current}");
+                        current = -current;
+                        break;
+                    case Result.PlayTotal:
+                        Console.WriteLine($"You win this hand. You win {current}");
+                        break;
+                }
+                helpers.AddToTransactions(current, result);
+                cardSupply.ReplenishCards();
 
-
-
-            }
+                Console.WriteLine($@"{user.Balance} Credits. Press any key to continue");
+                Console.ReadLine();
+                            }while (true);
+        } 
     }
+    
 }

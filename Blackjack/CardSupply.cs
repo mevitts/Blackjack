@@ -11,12 +11,16 @@ namespace Blackjack
         private static List<String> dealerHand;
         private static List<String> userHand;
         private static List<String> cards;
+        private static bool userBlackJack;
+        private static bool dealerBlackJack;
 
 
         //will preserve encapsulation while also being available in other classes
         public List<String> DealerHand => dealerHand;
         public List<String> UserHand => userHand;
-
+        public int MaxHand => MAX_HAND;
+        public bool UserBlackJack => userBlackJack;
+        public bool DealerBlackJack => dealerBlackJack;
 
         public List<String> CreateCards()
         {
@@ -59,6 +63,8 @@ namespace Blackjack
         //draft 4 cards (2 for dealer and 2 for player) formatted for multiple players. and split based on how it should be on order.
         public static void InitialDeal(int players)
         {
+            userBlackJack = false;
+            dealerBlackJack = false;
             List<String> initialCards = new List<String>();
             var rand = new Random();
             int requiredCards = 2 + (2 * players);
@@ -69,7 +75,6 @@ namespace Blackjack
                 var randomCard = cards[randomCardIndex];
                 initialCards.Add(randomCard);
                 cards.RemoveAt(randomCardIndex);
-
             }
             //this part will have to be looked at more when more possible players are allowed.
             //it is in preparation for this, but have not looked into it deep enough. 
@@ -81,8 +86,11 @@ namespace Blackjack
                 userHand.Add(initialCards[i]);
                 dealerHand.Add(initialCards[i + 1]);
             }
-
+            //checks for blackJacks
+            userBlackJack = helpers.BlackJack(userHand);
+            dealerBlackJack = helpers.BlackJack(dealerHand);
         }
+
         public void ReplenishCards()
         {
             foreach (string card in userHand)
@@ -158,4 +166,5 @@ namespace Blackjack
     }
         enum Rank { Ace1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack = 10, Queen = 10, King = 10, Ace2 = 11, Ace = Ace1 | Ace2 }
         enum Hand { Player, Dealer }
+        
 }
