@@ -56,6 +56,7 @@ namespace Blackjack
                 dealerHand.Add(card);
             }
             cards.RemoveAt(randomCardIndex);
+            Console.WriteLine($"{card} drawn.");
             return card;
         }
 
@@ -81,7 +82,7 @@ namespace Blackjack
             userHand = new List<String>();
             dealerHand = new List<String>();
 
-            for (int i = 0; i < players; i++)
+            for (int i = 0; i <= players; i++)
             {
                 userHand.Add(initialCards[i]);
                 dealerHand.Add(initialCards[i + 1]);
@@ -164,7 +165,7 @@ namespace Blackjack
 
         
     }
-        enum Rank { Ace1, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack = 10, Queen = 10, King = 10, Ace2 = 11, Ace = Ace1 | Ace2 }
+        enum Rank { Ace1, Two=2, Three=3, Four=4, Five=5, Six =6, Seven=7, Eight=8, Nine=9, Ten=10, Jack = 10, Queen = 10, King = 10, Ace2, Ace = Ace1 | Ace2 }
         enum Hand { Player, Dealer }
         
 }

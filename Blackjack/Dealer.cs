@@ -19,13 +19,14 @@ namespace Blackjack;
         int finalScore = 0;
         int numberOfAces = 0;
 
-        foreach (string card in dealerHand)
-        {
-            if (Enum.TryParse(card, out Rank rank))
-            {   
+       
+        
+        { while (finalScore < 17)
+            
+            {   foreach (string card in dealerHand)
 
-                while (finalScore < 17)
-                {
+                
+                {if (Enum.TryParse(card, out Rank rank))
                     
                     if (rank != Rank.Ace)
                     {
@@ -46,9 +47,8 @@ namespace Blackjack;
                         cardScore = maxScoreWithAces;
                     }
                     finalScore = cardScore;
-                    cardSupply.Draw(Hand.Dealer);
                     //updates list to continue counting
-                    dealerHand = cardSupply.DealerHand;
+                    
                 }
             }
         }
@@ -56,6 +56,7 @@ namespace Blackjack;
     }
     public bool Bust(List<string> playerHand, Hand hand) 
     {
+        int finalScore = 0;
         if (hand == Hand.Dealer)
         {
             playerHand = cardSupply.DealerHand;
@@ -65,18 +66,23 @@ namespace Blackjack;
         else if (hand == Hand.Player) 
         {
             playerHand = cardSupply.UserHand;
-            return (cardSupply.CardTotal(playerHand) > 21);
-            
+            return (cardSupply.CardTotal(playerHand) > 21); 
         }
         return false;
     }
-    public void DealerProcess(List<string> hand)
+    public void DealerProcess()
     {
-        hand = cardSupply.DealerHand;
-        while (DealerCount(ref hand) < 17 || Bust(hand, Hand.Dealer) == false)
+        List<String> hand = cardSupply.DealerHand;
+        while (DealerCount(ref hand) < 17)
         {
-            hand = cardSupply.DealerHand;
+            Console.WriteLine("Dealer's turn.");
             cardSupply.Draw(Hand.Dealer);
+            Console.WriteLine($"Dealer total is {DealerCount(ref hand)}");
+            if (Bust(hand, Hand.Dealer))
+            {
+                break;
+            }
+            Thread.Sleep(1500);
         }
     }
     public Result WinDecider(List<string> dealerHand, List<string> playerHand) 

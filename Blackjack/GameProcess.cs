@@ -11,8 +11,11 @@ namespace Blackjack
     internal class GameProcess
     {
         User user = new User("Matt");
+
         internal void GameMenu()
         {
+
+            Console.Clear();
             Console.WriteLine("Welcome to Blackjack. Type if you would like to play or check stats (p/c)");
             var response = Console.ReadLine();
             if (response.ToLower() == "p")
@@ -25,6 +28,8 @@ namespace Blackjack
             }
         }
         internal void StartGame() {
+            do { 
+            Console.Clear();
             Console.WriteLine($@"{user.Balance} Credits.
                                  How much would you like to wager? (Increments of 1, 5, 10, 20, 50, 100)
                                  Or, type e to go back to menu.");
@@ -50,7 +55,8 @@ namespace Blackjack
                         current++;
                     }
 
-                    //seguir means continue, used as word to see if continue wagering because "continue" can't be used
+                        //seguir means continue, used as word to see if continue wagering because "continue" can't be used
+                        Console.Clear();
                     Console.WriteLine($"{current} wagered. Type w to wager more, type s to start the game, or e to return to menu)");
                     string seguir = Console.ReadLine();
                     if (seguir.ToLower() == "s")
@@ -87,10 +93,12 @@ namespace Blackjack
                 {
                     continueGame = false;
                 }
+                
                 while (continueGame)
                 {
                     userTotal = cardSupply.CardTotal(cardSupply.UserHand);
                     dealerTotal = dealer.DealerCount(ref dealerHand);
+                        Console.Clear();
                     Console.WriteLine($"Your total is {userTotal}. Your dealer is showing {cardSupply.DealerHand[0]}. Will you hit or stay? (h/s)");
                     string userResponse = Console.ReadLine();
                     while (userResponse.ToLower() != "h" && userResponse.ToLower() != "s")
@@ -100,22 +108,37 @@ namespace Blackjack
                     }
                     if (userResponse.ToLower() == "s")
                     {
+                        Console.WriteLine($"Dealer reveals {cardSupply.DealerHand[1]}, totalling {dealer.DealerCount(ref dealerHand)}.");
+                        Thread.Sleep(1000);
                         dealer.DealerProcess(cardSupply.DealerHand);
                         continueGame = false;
                     }
                     else
                     {
                         cardSupply.Draw(Hand.Player);
+                        Console.WriteLine($"Total is {cardSupply.CardTotal(cardSupply.UserHand)}");
+                            Thread.Sleep (2000);
+
                         if (dealer.Bust(cardSupply.UserHand, Hand.Player))
                         {
-                            continueGame = false ;
+                                Console.WriteLine("You busted.");
+                                Thread.Sleep(1000); 
+                            continueGame = false;
                         }
                     }
                 }
-                
 
-                var result = dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand);
-                
+                   var result = new Result();
+
+                    if (!dealer.Bust(cardSupply.UserHand, Hand.Player))
+                    {
+                        result = dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand);
+                    }
+                    else
+                    {
+                        result = Result.PlayBust;
+                    }
+
                 switch (result)
                 {
                     case Result.PlayBJ:
@@ -135,7 +158,7 @@ namespace Blackjack
                         break;
                     case Result.PlayBust:
                         Console.WriteLine($"You bust, you lose {current}.");
-                        current = -current; 
+                        current = -current;
                         break;
                     case Result.DealTotal:
                         Console.WriteLine($"The dealer wins this hand. You lose {current}");
@@ -145,13 +168,19 @@ namespace Blackjack
                         Console.WriteLine($"You win this hand. You win {current}");
                         break;
                 }
-                helpers.AddToTransactions(current, result);
+
+                helpers.AddToTransactions(current, result, user.AllTransactions);
                 cardSupply.ReplenishCards();
 
-                Console.WriteLine($@"{user.Balance} Credits. Press any key to continue");
+                
+                Console.WriteLine($"\n\n{user.Balance} Credits. Press any key to continue");
                 Console.ReadLine();
-                            }while (true);
+            }
+        }while (true);
+
+
         } 
+
     }
     
 }

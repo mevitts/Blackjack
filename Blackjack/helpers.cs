@@ -9,8 +9,8 @@ namespace Blackjack
 {
     internal class helpers
     {
-        internal static List<Transaction> allTransactions = new List<Transaction>();
-
+        
+        
         internal static int Increment(int current, int amount)
         {
             int[] validIncs = { 1, 5, 10, 20, 50, 100 };
@@ -31,7 +31,7 @@ namespace Blackjack
         {
             return (hand.Contains("Ace") && hand.Any(face => face == "King" || face == "Queen" || face == "Jack"));
         }
-        internal static void AddToTransactions(int current, Result result)
+        internal static void AddToTransactions(int current, Result result, List<Transaction> allTransactions)
         {
             //will wait to be added until after windecider decides win or loss and changes current to -, +, *1.5 or0
             allTransactions.Add(new Transaction
