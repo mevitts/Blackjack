@@ -89,15 +89,19 @@ namespace Blackjack
                 List<string> dealerHand = cardSupply.DealerHand;
 
                 var bjResult = (dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand));
-                if (bjResult == Result.Tie || bjResult == Result.PlayBJ || bjResult == Result.DealBJ)
+                    bool continueBJ = false;
+                    var result = new Result();
+                    if (bjResult == Result.Tie || bjResult == Result.PlayBJ || bjResult == Result.DealBJ)
                 {
                     continueGame = false;
+                        continueBJ = true;
+                        result = bjResult;
                 }
                 
                 while (continueGame)
                 {
                     userTotal = cardSupply.CardTotal(cardSupply.UserHand);
-                    dealerTotal = dealer.DealerCount(ref dealerHand);
+                    dealerTotal = dealer.DealerCount(dealerHand);
                         Console.Clear();
                     Console.WriteLine($"Your total is {userTotal}. Your dealer is showing {cardSupply.DealerHand[0]}. Will you hit or stay? (h/s)");
                     string userResponse = Console.ReadLine();
@@ -108,9 +112,9 @@ namespace Blackjack
                     }
                     if (userResponse.ToLower() == "s")
                     {
-                        Console.WriteLine($"Dealer reveals {cardSupply.DealerHand[1]}, totalling {dealer.DealerCount(ref dealerHand)}.");
+                        Console.WriteLine($"Dealer reveals {cardSupply.DealerHand[1]}, totalling {dealer.DealerCount(dealerHand)}.");
                         Thread.Sleep(1000);
-                        dealer.DealerProcess(cardSupply.DealerHand);
+                        dealer.DealerProcess();
                         continueGame = false;
                     }
                     else
@@ -128,17 +132,20 @@ namespace Blackjack
                     }
                 }
 
-                   var result = new Result();
-
-                    if (!dealer.Bust(cardSupply.UserHand, Hand.Player))
+                    if (!continueBJ)
                     {
-                        result = dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand);
-                    }
-                    else
-                    {
-                        result = Result.PlayBust;
-                    }
+                        
 
+                        if (!dealer.Bust(cardSupply.UserHand, Hand.Player))
+                        {
+                            result = dealer.WinDecider(cardSupply.DealerHand, cardSupply.UserHand);
+                        }
+                        else
+                        {
+                            result = Result.PlayBust;
+                        }
+                    }
+                
                 switch (result)
                 {
                     case Result.PlayBJ:

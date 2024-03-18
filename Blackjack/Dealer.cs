@@ -13,54 +13,50 @@ namespace Blackjack;
     public Dealer(CardSupply cardSupply) => this.cardSupply = cardSupply;
 
     //reference parameter so it can update throughout.
-    public int DealerCount(ref List<string> dealerHand)
+    public int DealerCount(List<string> dealerHand)
     {
         int cardScore = 0;
-        int finalScore = 0;
         int numberOfAces = 0;
 
-       
-        
-        { while (finalScore < 17)
-            
-            {   foreach (string card in dealerHand)
-
-                
-                {if (Enum.TryParse(card, out Rank rank))
-                    
-                    if (rank != Rank.Ace)
-                    {
-                        cardScore += (int)rank;
-                        finalScore = cardScore;
-                    }
-                    else
-                    {
-                        numberOfAces++;
-                    }
-                    int maxScoreWithAces = cardScore + numberOfAces * 11;
-
-                    //logic to decrease ace value if bust until in sweetspot range of 17 to 21
-                    while (maxScoreWithAces > cardSupply.MaxHand && numberOfAces > 0 && cardScore >= 17)
-                    {
-                        maxScoreWithAces -= 10;
-                        numberOfAces--;
-                        cardScore = maxScoreWithAces;
-                    }
-                    finalScore = cardScore;
-                    //updates list to continue counting
-                    
+        foreach (string card in dealerHand)
+        {
+            if (Enum.TryParse(card, out Rank rank))
+            {
+                if (rank != Rank.Ace)
+                {
+                    cardScore += (int)rank;
+                }
+                else
+                {
+                    numberOfAces++;
                 }
             }
         }
+
+        // Calculate final score with Ace logic
+        int finalScore = cardScore;
+        for (int i = 0; i < numberOfAces; i++)
+        {
+            if (finalScore + 11 <= cardSupply.MaxHand)
+            {
+                finalScore += 11;
+            }
+            else
+            {
+                finalScore += 1;
+            }
+        }
+
         return finalScore;
     }
+
     public bool Bust(List<string> playerHand, Hand hand) 
     {
         int finalScore = 0;
         if (hand == Hand.Dealer)
         {
             playerHand = cardSupply.DealerHand;
-            return (DealerCount(ref playerHand) > 21);
+            return (DealerCount(playerHand) > 21);
             
         }
         else if (hand == Hand.Player) 
@@ -73,11 +69,11 @@ namespace Blackjack;
     public void DealerProcess()
     {
         List<String> hand = cardSupply.DealerHand;
-        while (DealerCount(ref hand) < 17)
+        while (DealerCount(hand) < 17)
         {
             Console.WriteLine("Dealer's turn.");
             cardSupply.Draw(Hand.Dealer);
-            Console.WriteLine($"Dealer total is {DealerCount(ref hand)}");
+            Console.WriteLine($"Dealer total is {DealerCount(hand)}");
             if (Bust(hand, Hand.Dealer))
             {
                 break;
@@ -113,8 +109,8 @@ namespace Blackjack;
             else
             {
                 //condensed instead of 3 if statements (ternary conditional)
-                result = (DealerCount(ref dealerHand) > cardSupply.CardTotal(playerHand)) ? Result.DealTotal :
-                         (DealerCount(ref dealerHand) < cardSupply.CardTotal(playerHand)) ? Result.PlayTotal :
+                result = (DealerCount(dealerHand) > cardSupply.CardTotal(playerHand)) ? Result.DealTotal :
+                         (DealerCount(dealerHand) < cardSupply.CardTotal(playerHand)) ? Result.PlayTotal :
                          Result.Tie;
             } 
         }
