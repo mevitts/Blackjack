@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Blackjack
 {
@@ -31,15 +32,25 @@ namespace Blackjack
         {
             return (hand.Contains("Ace") && hand.Any(face => face == "King" || face == "Queen" || face == "Jack"));
         }
-        internal static void AddToTransactions(int current, Result result, List<Transaction> allTransactions)
+        internal static void AddToTransactions(Transaction transaction, List<Transaction> allTransactions)
         {
             //will wait to be added until after windecider decides win or loss and changes current to -, +, *1.5 or0
-            allTransactions.Add(new Transaction
+            allTransactions.Add(transaction);
+        }
+
+        internal static string WinOrLoss(Result result)
+        {
+            switch (result)
             {
-                Amount = current,
-                Date = DateTime.Now,
-                GameResult = result
-            });
+                case Result.DealBust:
+                case Result.PlayBJ:
+                case Result.PlayTotal:
+                    return "Win";
+                case Result.Tie:
+                    return "Tie";
+                default:
+                    return "Loss";
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Blackjack
 {
-    internal class Transaction
+    class Transaction
     {
         public int Amount { get; set; }
         public DateTime Date { get; set; }

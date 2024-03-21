@@ -24,7 +24,7 @@ namespace Blackjack
             }
             else
             {
-                //stat looks
+                sqLiteDB.GetAllRecords();
             }
         }
         internal void StartGame() {
@@ -37,7 +37,7 @@ namespace Blackjack
             string firstEntry = Console.ReadLine();
             if (firstEntry.ToLower() == "e")
             {
-
+                    GameMenu();
             }
             //need to add other cases, like if increment is -1,, or if the answer/response was not an integer.
             {
@@ -146,6 +146,7 @@ namespace Blackjack
                         }
                     }
                 
+                
                 switch (result)
                 {
                     case Result.PlayBJ:
@@ -176,11 +177,17 @@ namespace Blackjack
                         break;
                 }
 
-                helpers.AddToTransactions(current, result, user.AllTransactions);
+                    Transaction transaction = new Transaction() ;
+                    transaction.GameResult = result;
+                    transaction.Amount = current;
+                    transaction.Date = DateTime.Now;
+
+                helpers.AddToTransactions(transaction, user.AllTransactions);
                 cardSupply.ReplenishCards();
 
                 
                 Console.WriteLine($"\n\n{user.Balance} Credits. Press any key to continue");
+                    sqLiteDB.AddHand(transaction);
                 Console.ReadLine();
             }
         }while (true);
